@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Parking Space</title>
+
+  <!-- Bootstrap CSS via CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- jQuery via CDN -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- Custom CSS -->
+  <style>
+    :root {
+      --primary: #ff8c00;
+      --primary-dark: #e67e00;
+      --bg-dark: #000000;
+      --bg-light: #1a1a1a;
+      --text-light: #ffffff;
+    }
+    
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-light);
+      font-family: 'Arial', sans-serif;
+    }
+    
+    .navbar {
+      background-color: var(--bg-dark) !important;
+      border-bottom: 2px solid var(--primary);
+    }
+    
+    .navbar-brand {
+      color: var(--primary) !important;
+      font-weight: bold;
+    }
+    
+    .nav-link {
+      color: var(--text-light) !important;
+    }
+    
+    .nav-link:hover, .nav-link.active {
+      color: var(--primary) !important;
+    }
+    
+    .booking-container {
+      background-color: var(--bg-light);
+      border-radius: 8px;
+      border: 2px solid var(--primary);
+      padding: 2rem;
+      margin: 2rem auto;
+    }
+    
+    .booking-header {
+      color: var(--primary);
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .slot-card {
+      background-color: #333;
+      border: 1px solid #444;
+      border-left: 4px solid var(--primary);
+      margin-bottom: 1rem;
+      padding: 1rem;
+      border-radius: 4px;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary-dark);
+      border: none;
+      font-weight: bold;
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+    }
+    
+    .modal-header {
+      background-color: var(--bg-light);
+      border-bottom: 1px solid var(--primary);
+      color: var(--primary);
+    }
+    
+    .modal-content {
+      background-color: var(--bg-light);
+      color: var(--text-light);
+    }
+    
+    .form-control {
+      background-color: #333;
+      border: 1px solid #444;
+      color: var(--text-light);
+    }
+    
+    .form-control:focus {
+      background-color: #333;
+      color: var(--text-light);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 0.25rem rgba(255, 140, 0, 0.25);
+    }
+    
+    .invalid-feedback {
+      color: #ff6b6b;
+    }
+    
+    footer {
+      background-color: var(--bg-dark);
+      color: var(--text-light);
+      padding: 1.5rem 0;
+      text-align: center;
+      border-top: 1px solid var(--primary);
+    }
+    
+    .payment-link {
+      background-color: var(--primary);
+      color: var(--bg-dark);
+      font-weight: bold;
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      margin-top: 1rem;
+      text-decoration: none;
+    }
+    
+    .payment-link:hover {
+      background-color: var(--primary-dark);
+      color: var(--bg-dark);
+    }
+  </style>
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">Parking System</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="bookings.html">My Bookings</a></li>
+        <li class="nav-item"><a class="nav-link" href="logout.html">Logout</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8 booking-container">
+      <h2 class="booking-header">Booking Parking Space</h2>
+
+      <!-- Booking Details -->
+      <div id="bookingDetails" class="mb-4"></div>
+
+      <!-- Available Slots -->
+      <div id="availableSlots"></div>
+
+      <!-- Response message -->
+      <div id="responseMessage" class="response-message text-center"></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>&copy; 2025 Parking System. All Rights Reserved.</p>
+</footer>
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmModalLabel">Confirm Booking</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <p><strong>Parking Space:</strong> <span id="modalLocation"></span></p>
+        <p><strong>Space Number:</strong> <span id="modalSpaceNumber"></span></p>
+        <p><strong>Selected Slot:</strong> <span id="modalSelectedSlot"></span></p>
+
+        <!-- Input Fields for Custom Start and End Times -->
+        <div class="mb-3">
+          <label for="customStartTime" class="form-label">Your Start Time</label>
+          <input type="datetime-local" id="customStartTime" class="form-control">
+        </div>
+        <div class="mb-3">
+          <label for="customEndTime" class="form-label">Your End Time</label>
+          <input type="datetime-local" id="customEndTime" class="form-control">
+        </div>
+
+        <!-- 🔥 NEW: Estimated Payment Output -->
+        <div class="mb-3" id="estimatedPayment" style="color: #46ab57; font-weight: 500;"></div>
+
+        <!-- Payment Method Selection -->
+        <div class="mb-3">
+          <label for="paymentMethod" class="form-label">Payment Method</label>
+          <select id="paymentMethod" class="form-select">
+            <option value="">Select Payment Method</option>
+            <option value="creditCard">Credit Card</option>
+            <option value="paypal">PayPal</option>
+          </select>
+          <a href="payment.html" class="paymentlink">Make Payment</a>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="confirmBookingButton">Confirm</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- Bootstrap JS and Popper.js via CDN -->
+<script src='https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js'></script>
+
+<!-- JavaScript Logic -->
+<script>
+  $(document).ready(function () {
+  
+    // Retrieve URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const parkingSpaceId = urlParams.get('spaceId');
+  
+    // Check if parkingSpaceId exists
+    if (!parkingSpaceId) {
+      $('#responseMessage').html('<div class=\"alert alert-danger\">Invalid parking space ID.</div>');
+      return;
+    }
+  
+    // Fetch parking space details and available slots
+    $.ajax({
+      url: `http://localhost:3000/api/parkingSpaces/${parkingSpaceId}`,
+      type: "GET",
+      success: function (response) {
+        if (response.success && response.parkingSpace) {
+          const space = response.parkingSpace;
+  
+          // Display parking space details
+          $('#bookingDetails').html(`
+            <p><strong>Location:</strong> ${space.location}</p>
+            <p><strong>Space Number:</strong> ${space.spaceNumber}</p>
+            <p><strong>Price per Hour:</strong> ₹${space.pricePerHour}</p>`);
+  
+          // Loop through the slots to show available ones
+          let slotsHTML = '';
+          space.slots.forEach(slot => {
+            if (slot.status === 'available') {
+              slotsHTML += `
+                <div class='slot-info'>
+                  <p><strong>Available From:</strong> ${new Date(slot.startTime).toLocaleString()}</p>
+                  <p><strong>Available To:</strong> ${new Date(slot.endTime).toLocaleString()}</p>
+                  <button 
+                    class='btn btn-custom book-button' 
+                    onclick="
+                      selectSlot('${slot.slotId}', '${slot.startTime}', '${slot.endTime}', '${space.location}', '${space.spaceNumber}', ${space.pricePerHour})"
+                  style="background:var(--primary)"
+                      >Select Slot</button>
+                </div>`;
+            }
+          });
+  
+          // If no slots are available
+          if (slotsHTML === '') {
+            $('#availableSlots').html('<p>No available slots for this parking space.</p>');
+          } else {
+            $('#availableSlots').html(slotsHTML);
+          }
+          
+        } else {
+          $('#responseMessage').html('<div class=\"alert alert-danger\">Unable to fetch parking space details.</div>');
+        }
+      },
+      
+      error: function () {
+        $('#responseMessage').html('<div class=\"alert alert-danger\">Something went wrong. Please try again later.</div>');
+      }
+    });
+  
+    
+    // Function to handle slot selection and display the modal
+    window.selectSlot = function (slotId, startTime, endTime, location, spaceNumber, pricePerHour) {
+      $('#confirmModal').data('slotId', slotId);
+      $('#modalLocation').text(location);
+      $('#modalSpaceNumber').text(spaceNumber);
+      $('#modalSelectedSlot').text(`From ${new Date(startTime).toLocaleString()} To ${new Date(endTime).toLocaleString()}`);
+      $('#estimatedPayment').html(''); // Clear any previous amount preview
+      $('#confirmModal').modal('show');
+    };
+  
+    // 👇 New: Live duration and payment preview based on input
+    $('#customStartTime, #customEndTime').on('change', function () {
+      const customStartTime = new Date($('#customStartTime').val());
+      const customEndTime = new Date($('#customEndTime').val());
+  
+      if (!isNaN(customStartTime.getTime()) && !isNaN(customEndTime.getTime())) {
+        const durationInMs = customEndTime - customStartTime;
+        const durationInHours = Math.ceil(durationInMs / (1000 * 60 * 60));
+  
+        if (durationInHours > 0) {
+          const totalAmount = durationInHours * 5;
+          $('#estimatedPayment').html(`
+            <p><strong>Duration:</strong> ${durationInHours} hour(s)</p>
+            <p><strong>Your total payment will be:</strong> Rs ${totalAmount}</p>
+          `);
+        } else {
+          $('#estimatedPayment').html('<p class="text-danger">End time must be after start time.</p>');
+        }
+      } else {
+        $('#estimatedPayment').html('');
+      }
+    });
+  
+    // Handle booking confirmation from the modal
+    $('#confirmBookingButton').on('click', function () {
+      const slotId = $('#confirmModal').data('slotId');
+      const customStartTime = $('#customStartTime').val();
+      const customEndTime = $('#customEndTime').val();
+      const paymentMethod = $('#paymentMethod').val();
+  
+      if (!customStartTime || !customEndTime || !paymentMethod) {
+        $('#responseMessage').html('<div class=\"alert alert-danger\">Please enter valid start and end times and select a payment method.</div>');
+        return;
+      }
+  
+      const token = localStorage.getItem('token');
+      if (!token) {
+        $('#responseMessage').html('<div class=\"alert alert-danger\">You must be logged in to book a space.</div>');
+        return;
+      }
+  
+      const bookingData = {
+        parkingSpaceId,
+        slotId,
+        bookingDate: new Date().toISOString(),
+        startTime: customStartTime,
+        endTime: customEndTime
+      };
+  
+      $.ajax({
+        url: "http://localhost:3000/api/bookings",
+        type: "POST",
+        headers: { "Authorization": `Bearer ${token}` },
+        data: bookingData,
+        success: function (response) {
+          if (response.success) {
+            const startDate = new Date(customStartTime);
+            const endDate = new Date(customEndTime);
+  
+            if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+              $('#responseMessage').html('<div class=\"alert alert-danger\">Invalid start or end time provided.</div>');
+              return;
+            }
+  
+            const durationInHours = Math.ceil((endDate - startDate) / (1000 * 60 * 60));
+  
+            if (durationInHours <= 0) {
+              $('#responseMessage').html('<div class=\"alert alert-danger\">End time must be greater than start time.</div>');
+              return;
+            }
+  
+            const totalAmount = durationInHours * 5;
+  
+            const paymentData = {
+              bookingId: response.booking._id,
+              amount: totalAmount,
+              paymentMethod
+            };
+  
+            $.ajax({
+              url: "http://localhost:3000/api/payments",
+              type: "POST",
+              headers: { "Authorization": `Bearer ${token}` },
+              data: paymentData,
+              success: function (paymentResponse) {
+                if (paymentResponse.success) {
+                  $('#responseMessage').html('<div class=\"alert alert-success\">Payment successful! Redirecting...</div>');
+                  setTimeout(() => window.location.href = "thank-you.html", 2000);
+                } else {
+                  console.error("Payment failed:", paymentResponse);
+                  $('#responseMessage').html(`<div class=\"alert alert-danger\">Payment failed: ${paymentResponse.message || 'Unknown error'}</div>`);
+                }
+              },
+              error: function (jqXHR, textStatus, errorThrown) {
+                console.error("Payment error:", jqXHR, textStatus, errorThrown);
+                $('#responseMessage').html('<div class=\"alert alert-danger\">Payment error. Check the console for details.</div>');
+              }
+            });
+          } else {
+            $('#responseMessage').html(`<div class=\"alert alert-danger\">${response.message}</div>`);
+          }
+        },
+        error: function () {
+          $('#responseMessage').html('<div class=\"alert alert-danger\">Something went wrong while booking. Please try again later.</div>');
+        }
+      });
+  
+      $('#confirmModal').modal('hide');
+    });
+  
+    function logout() {
+      localStorage.removeItem('token');
+      window.location.href = 'login.html';
+    }
+  
+  });
+  </script>
+  
+</body>
+
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Bookings | Parking System</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    :root {
+      --primary: #ff8c00;
+      --primary-dark: #e67e00;
+      --bg-dark: #000;
+      --bg-light: #1a1a1a;
+      --text-light: #fff;
+    }
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-light);
+      font-family: 'Arial', sans-serif;
+    }
+    .navbar {
+      background-color: var(--bg-dark) !important;
+      border-bottom: 1px solid var(--primary);
+    }
+    .navbar-brand {
+      color: var(--primary) !important;
+      font-weight: bold;
+    }
+    .nav-link {
+      color: var(--text-light) !important;
+    }
+    .nav-link:hover, .nav-link.active {
+      color: var(--primary) !important;
+    }
+    .bookings-container {
+      background-color: var(--bg-light);
+      border-radius: 8px;
+      border: 1px solid var(--primary);
+      padding: 2rem;
+      margin: 2rem auto;
+    }
+    .section-header {
+      color: var(--primary);
+      border-bottom: 1px solid var(--primary);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .booking-card {
+      background-color: #333;
+      border: 1px solid #444;
+      border-left: 4px solid var(--primary);
+      margin-bottom: 1rem;
+      padding: 1rem;
+      border-radius: 4px;
+    }
+    .btn-primary {
+      background-color: var(--primary);
+      border: none;
+      font-weight: bold;
+    }
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand" href="dashboard.html">Parking System</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="dashboard.html">Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="bookings.html">My Bookings</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="paymenthistory.html">Payment History</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="history.html">Parking History</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="about.html">About Us</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" onclick="logout()">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="bookings-container">
+      <h2 class="section-header">My Bookings</h2>
+      
+      <div id="bookingsList"></div>
+      <div id="responseMessage" class="mt-3"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      // Fetch user bookings
+      $.ajax({
+        url: "http://localhost:3000/api/bookings",
+        type: "GET",
+        headers: { "Authorization": `Bearer ${token}` },
+        success: function(response) {
+          if (response.success && response.bookings.length > 0) {
+            let html = '';
+            response.bookings.forEach(booking => {
+              const startTime = new Date(booking.startTime).toLocaleString();
+              const endTime = new Date(booking.endTime).toLocaleString();
+              
+              html += `
+                <div class="booking-card">
+                  <h5>${booking.parkingSpace.location} - Space ${booking.parkingSpace.spaceNumber}</h5>
+                  <p><strong>Status:</strong> ${booking.status || 'Confirmed'}</p>
+                  <p><strong>Start:</strong> ${startTime}</p>
+                  <p><strong>End:</strong> ${endTime}</p>
+                  <p><strong>Booking id:</strong> ${booking._id?.toString()}</p>
+                </div>
+              `;
+            });
+            $('#bookingsList').html(html);
+          } else {
+            $('#bookingsList').html('<p>You have no bookings yet.</p>');
+          }
+        },
+        error: function() {
+          showMessage('Error fetching bookings', 'danger');
+        }
+      });
+    });
+    
+    function showMessage(msg, type) {
+      $('#responseMessage').html(`<div class="alert alert-${type}">${msg}</div>`);
+    }
+    
+    function logout() {
+      localStorage.removeItem('token');
+      window.location.href = 'login.html';
+    }
+  </script>
+</body>
+</html>

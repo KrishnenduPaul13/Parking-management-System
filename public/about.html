@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us | Parking System</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #ff8c00;
+      --primary-dark: #e67e00;
+      --bg-dark: #000000;
+      --bg-light: #1a1a1a;
+      --text-light: #ffffff;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-light);
+      font-family: 'Arial', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .navbar {
+      background-color: var(--bg-dark) !important;
+      border-bottom: 2px solid var(--primary);
+    }
+
+    .navbar-brand {
+      color: var(--primary) !important;
+      font-weight: bold;
+      font-size: 1.5rem;
+    }
+
+    .nav-link {
+      color: var(--text-light) !important;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      margin: 0 0.25rem;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+
+    .nav-link:hover, .nav-link.active {
+      color: var(--primary) !important;
+      background-color: rgba(255, 140, 0, 0.1);
+    }
+
+    .about-container {
+      background-color: var(--bg-light);
+      border-radius: 10px;
+      padding: 2.5rem;
+      margin: 3rem auto;
+      border: 2px solid var(--primary);
+    }
+
+    .section-title {
+      color: var(--primary);
+      font-weight: 700;
+      margin-bottom: 2rem;
+      text-align: center;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 0.5rem;
+    }
+
+    .developer-card {
+      background-color: #333;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      border-left: 4px solid var(--primary);
+      transition: transform 0.3s ease;
+    }
+
+    .developer-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .developer-img {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 3px solid var(--primary);
+      margin: 0 auto 1rem;
+      display: block;
+    }
+
+    .developer-name {
+      color: var(--primary);
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .developer-id {
+      color: #aaa;
+      text-align: center;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .developer-bio {
+      color: #e0e0e0;
+      text-align: center;
+    }
+
+    footer {
+      background-color: var(--bg-dark);
+      color: var(--text-light);
+      padding: 1.5rem 0;
+      text-align: center;
+      margin-top: auto;
+      border-top: 1px solid var(--primary);
+    }
+
+    @media (max-width: 768px) {
+      .about-container {
+        padding: 1.5rem;
+      }
+      
+      .developer-card {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">Parking System</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto" id="navbar-links">
+          <!-- Links will be injected here based on user authentication -->
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="about-container">
+      <h2 class="section-title">Meet Our Development Team</h2>
+      
+      <div class="row">
+        <div class="col-md-4">
+          <div class="developer-card">
+            <img src="kashish.jpeg" alt="Kashish Agarwal" class="developer-img">
+            <h3 class="developer-name">Kashish Agarwal</h3>
+            <p class="developer-id">23BIT0134</p>
+          </div>
+        </div>
+        
+        <div class="col-md-4">
+          <div class="developer-card">
+            <img src="nishtha.jpeg" Nishtha Aggarwal class="developer-img">
+            <h3 class="developer-name">Nishtha Aggarwal</h3>
+            <p class="developer-id">23BIT0132</p>
+          </div>
+        </div>
+        
+        <div class="col-md-4">
+          <div class="developer-card">
+            <img src="krishnendu.jpeg" alt="Krishnendu Paul" class="developer-img">
+            <h3 class="developer-name">Krishnendu Paul</h3>
+            <p class="developer-id">23BIT0277</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row mt-4">
+        <div class="col-12">
+          <div class="developer-card">
+            <h3 class="text-center mb-3" style="color: var(--primary);">About The Project</h3>
+            <p class="developer-bio text-center">
+              Our Parking System is designed to provide a seamless experience for users to find and book parking spaces. 
+              The system features real-time availability, secure payments, and detailed history tracking.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 Parking System. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS and Popper.js -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Custom JS -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const token = localStorage.getItem('token');
+      const navbarLinks = document.getElementById('navbar-links');
+
+      if (token) {
+        navbarLinks.innerHTML = `
+          <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="bookings.html">My Bookings</a></li>
+          <li class="nav-item"><a class="nav-link" href="paymenthistory.html">Payments</a></li>
+          <li class="nav-item"><a class="nav-link" href="history.html">History</a></li>
+          <li class="nav-item"><a class="nav-link active" href="about.html">About Us</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" onclick="logout()">Logout</a></li>
+        `;
+      } else {
+        navbarLinks.innerHTML = `
+          <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
+          <li class="nav-item"><a class="nav-link" href="register.html">Register</a></li>
+          <li class="nav-item"><a class="nav-link active" href="about.html">About Us</a></li>
+        `;
+      }
+
+      function logout() {
+        localStorage.removeItem('token');
+        window.location.href = 'login.html';
+      }
+    });
+  </script>
+</body>
+</html>
